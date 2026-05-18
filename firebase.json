@@ -1,0 +1,68 @@
+{
+    "hosting": {
+        "site": "bluffbattle",
+        "public": "build/web",
+        "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ],
+        "headers": [
+            {
+                "source": "**/*.@(js|css)",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "public, max-age=31536000, immutable"
+                    }
+                ]
+            },
+            {
+                "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "public, max-age=86400"
+                    }
+                ]
+            }
+        ],
+        "cleanUrls": true,
+        "trailingSlash": false
+    },
+    "firestore": {
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
+    },
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "networking-app-2ae68",
+                    "appId": "1:149890281517:android:d586391f164b44cb79c8a4",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "ios": {
+                "default": {
+                    "projectId": "networking-app-2ae68",
+                    "appId": "1:149890281517:ios:6ac3215fe24997fe79c8a4",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "networking-app-2ae68",
+                    "configurations": {
+                        "android": "1:149890281517:android:d586391f164b44cb79c8a4",
+                        "ios": "1:149890281517:ios:6ac3215fe24997fe79c8a4",
+                        "web": "1:149890281517:web:18878e317937eefd79c8a4"
+                    }
+                }
+            }
+        }
+    }
+}

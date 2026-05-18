@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Users ────────────────────────────────────────────
+    match /users/{userId} {
+      // Anyone authenticated can read profiles
+      allow read: if request.auth != null;
+
+      // Users can only create/update their own profile
+      allow create: if request.auth != null
+                    && request.auth.uid == userId;
+
+      allow update: if request.auth != null
+                    && request.auth.uid == userId;
+
+      // No deletes
+      allow delete: if false;
+    }
+
+    // ─── Scans ────────────────────────────────────────────
+    match /scans/{scanId} {
+      // Any authenticated user can read scans (needed for dashboard stats)
+      allow read: if request.auth != null;
+
+      // Users can create scans where they are the scanner
+      allow create: if request.auth != null
+                    && request.resource.data.scannerId == request.auth.uid
+                    && request.resource.data.scannerId != request.resource.data.scannedId;
+
+      // No updates or deletes
+      allow update, delete: if false;
+    }
+
+    // ─── Answers ──────────────────────────────────────────
+    match /answers/{answerId} {
+      // Any authenticated user can read answers (needed for dashboard stats)
+      allow read: if request.auth != null;
+
+      // Users can create answers where they are the guesser
+      allow create: if request.auth != null
+                    && request.resource.data.guesserId == request.auth.uid
+                    && request.resource.data.guesserId != request.resource.data.targetId;
+
+      // No updates or deletes
+      allow update, delete: if false;
+    }
+
+    // ─── Events (Admin only write) ────────────────────────
+    match /events/{eventId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.auth.token.admin == true;
+    }
+
+    // ─── Default deny ─────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
